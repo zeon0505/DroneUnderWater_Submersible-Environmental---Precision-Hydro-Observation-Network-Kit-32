@@ -157,7 +157,7 @@
                             class="px-2 py-1 bg-emerald-500/10 text-emerald-500 text-[8px] font-black rounded-full border border-emerald-500/20 uppercase">Optimal</span>
                     </div>
                     <div class="flex items-baseline gap-1">
-                        <span class="text-4xl font-bold transition-all group-hover:scale-105" id="val-ph">7.1</span>
+                        <span class="text-4xl font-bold transition-all group-hover:scale-105" id="val-ph">0.0</span>
                         <span class="text-zinc-500 text-sm">pH</span>
                     </div>
                     <div class="absolute bottom-0 left-0 h-1 w-full bg-cyan-500 shadow-[0_0_15px_rgba(6,182,212,0.5)]">
@@ -174,7 +174,7 @@
                             class="px-2 py-1 bg-blue-500/10 text-blue-500 text-[8px] font-black rounded-full border border-blue-500/20 uppercase">Good</span>
                     </div>
                     <div class="flex items-baseline gap-1">
-                        <span class="text-4xl font-bold transition-all group-hover:scale-105" id="val-water">519</span>
+                        <span class="text-4xl font-bold transition-all group-hover:scale-105" id="val-water">0</span>
                         <span class="text-zinc-500 text-sm">ppm</span>
                     </div>
                     <div class="absolute bottom-0 left-0 h-1 w-full bg-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.5)]">
@@ -191,7 +191,7 @@
                             class="px-2 py-1 bg-orange-500/10 text-orange-500 text-[8px] font-black rounded-full border border-orange-500/20 uppercase">Normal</span>
                     </div>
                     <div class="flex items-baseline gap-1">
-                        <span class="text-4xl font-bold transition-all group-hover:scale-105" id="val-soil">43.0</span>
+                        <span class="text-4xl font-bold transition-all group-hover:scale-105" id="val-soil">0.0</span>
                         <span class="text-zinc-500 text-sm">%</span>
                     </div>
                     <div
@@ -209,7 +209,7 @@
                             class="px-2 py-1 bg-purple-500/10 text-purple-500 text-[8px] font-black rounded-full border border-purple-500/20 uppercase">Charging</span>
                     </div>
                     <div class="flex items-baseline gap-1">
-                        <span class="text-4xl font-bold transition-all group-hover:scale-105" id="val-battery">81</span>
+                        <span class="text-4xl font-bold transition-all group-hover:scale-105" id="val-battery">0</span>
                         <span class="text-zinc-500 text-sm">%</span>
                     </div>
                     <div
@@ -387,11 +387,11 @@
             const textColor = isDark ? '#71717a' : '#71717a';
 
             const data = {
-                labels: Array.from({ length: 20 }, (_, i) => i + 1),
+                labels: Array.from({ length: 20 }, (_, i) => ''),
                 datasets: [
                     {
                         label: 'pH',
-                        data: [7.2, 7.2, 7.2, 7.4, 7, 7.3, 7.1, 7.2, 7, 7, 7.4, 7.2, 7.1, 7.1, 7.4, 7, 7.2, 7.2, 7.3, 7.1],
+                        data: Array(20).fill(null),
                         borderColor: '#06b6d4',
                         backgroundColor: 'rgba(6,182,212,0.1)',
                         borderWidth: 2,
@@ -401,7 +401,7 @@
                     },
                     {
                         label: 'Water (ppm)',
-                        data: [502, 526, 516, 498, 509, 511, 488, 485, 516, 453, 473, 537, 505, 513, 458, 467, 483, 486, 543, 519],
+                        data: Array(20).fill(null),
                         borderColor: '#3b82f6',
                         backgroundColor: 'rgba(59,130,246,0.1)',
                         borderWidth: 2,
@@ -412,7 +412,7 @@
                     },
                     {
                         label: 'Soil (%)',
-                        data: [53, 57, 49, 42, 47, 47, 38, 51, 51, 47, 43, 50, 50, 53, 55, 47, 50, 57, 52, 43],
+                        data: Array(20).fill(null),
                         borderColor: '#f97316',
                         backgroundColor: 'rgba(249,115,22,0.1)',
                         borderWidth: 2,
@@ -422,7 +422,7 @@
                     },
                     {
                         label: 'Battery (%)',
-                        data: [83, 84, 84, 85, 86, 84, 84, 91, 85, 89, 81, 80, 86, 92, 88, 85, 80, 80, 86, 81],
+                        data: Array(20).fill(null),
                         borderColor: '#a855f7',
                         backgroundColor: 'rgba(168,85,247,0.1)',
                         borderWidth: 2,
@@ -480,34 +480,58 @@
             }
         }
 
-        // Simulating Live Data
-        function simulateData() {
-            const ph = (7.0 + Math.random() * 0.4).toFixed(1);
-            const water = Math.floor(480 + Math.random() * 60);
-            const soil = (40 + Math.random() * 5).toFixed(1);
-            const battery = Math.floor(75 + Math.random() * 10);
+        // Fetch Real Data from API
+        let lastDataId = null;
 
-            document.getElementById('val-ph').textContent = ph;
-            document.getElementById('val-water').textContent = water;
-            document.getElementById('val-soil').textContent = soil;
-            document.getElementById('val-battery').textContent = battery;
+        async function fetchData() {
+            try {
+                const response = await fetch('api.php?get_latest=true');
+                const data = await response.json();
 
-            // Update chart data (shift and add)
-            if (trendChart) {
-                trendChart.data.datasets[0].data.shift();
-                trendChart.data.datasets[0].data.push(parseFloat(ph));
-                trendChart.data.datasets[1].data.shift();
-                trendChart.data.datasets[1].data.push(water);
-                trendChart.data.datasets[2].data.shift();
-                trendChart.data.datasets[2].data.push(parseFloat(soil));
-                trendChart.data.datasets[3].data.shift();
-                trendChart.data.datasets[3].data.push(battery);
-                trendChart.update('none');
+                if (data.status !== "empty" && data.id) {
+                    // Only update and scroll if ID is new
+                    if (data.id !== lastDataId) {
+                        lastDataId = data.id;
+
+                        // Update Values
+                        document.getElementById('val-ph').textContent = parseFloat(data.kualitas_air).toFixed(1);
+                        document.getElementById('val-water').textContent = Math.floor(data.tahan);
+                        document.getElementById('val-soil').textContent = parseFloat(data.udara).toFixed(1);
+                        document.getElementById('val-battery').textContent = Math.floor(data.daya_listrik);
+
+                        // Update Chart
+                        if (trendChart) {
+                            trendChart.data.datasets[0].data.shift();
+                            trendChart.data.datasets[0].data.push(parseFloat(data.kualitas_air));
+                            trendChart.data.datasets[1].data.shift();
+                            trendChart.data.datasets[1].data.push(parseFloat(data.tahan));
+                            trendChart.data.datasets[2].data.shift();
+                            trendChart.data.datasets[2].data.push(parseFloat(data.udara));
+                            trendChart.data.datasets[3].data.shift();
+                            trendChart.data.datasets[3].data.push(parseFloat(data.daya_listrik));
+                            trendChart.update('none');
+                        }
+
+                        // Update Sync Status
+                        const now = new Date();
+                        document.getElementById('syncStatus').textContent = now.toLocaleTimeString('id-ID', { hour12: false });
+                        document.getElementById('syncStatus').classList.remove('text-amber-500');
+                        document.getElementById('syncStatus').classList.add('text-emerald-500');
+
+                        // Also refresh history context
+                        fetchHistory();
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                document.getElementById('syncStatus').textContent = "OFFLINE";
+                document.getElementById('syncStatus').classList.remove('text-emerald-500');
+                document.getElementById('syncStatus').classList.add('text-amber-500');
             }
         }
 
         initChart();
-        setInterval(simulateData, 3000);
+        setInterval(fetchData, 3000);
 
         // PDF Export Function
         function exportToPDF() {
