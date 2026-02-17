@@ -1,0 +1,56 @@
+{
+  "version": 1,
+  "author": "pip - underwater drone simulation",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "wokwi-esp32-devkit-v1",
+      "id": "esp",
+      "top": 0,
+      "left": 0
+    },
+    {
+      "type": "wokwi-potentiometer",
+      "id": "potPH",
+      "top": -120,
+      "left": -200,
+      "attrs": { "value": "2048" }
+    },
+    {
+      "type": "wokwi-potentiometer",
+      "id": "potTurbidity",
+      "top": 120,
+      "left": -200,
+      "attrs": { "value": "2048" }
+    },
+    {
+      "type": "wokwi-ds18b20",
+      "id": "tempSensor",
+      "top": 200,
+      "left": 200
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "res1",
+      "top": 100,
+      "left": 200,
+      "attrs": { "value": "4700" }
+    }
+  ],
+  "connections": [
+    ["potPH:VCC", "esp:3V3", "red", []],
+    ["potPH:GND", "esp:GND.1", "black", []],
+    ["potPH:SIG", "esp:34", "green", []],
+
+    ["potTurbidity:VCC", "esp:3V3", "red", []],
+    ["potTurbidity:GND", "esp:GND.1", "black", []],
+    ["potTurbidity:SIG", "esp:35", "blue", []],
+
+    ["tempSensor:VCC", "esp:3V3", "red", []],
+    ["tempSensor:GND", "esp:GND.1", "black", []],
+    ["tempSensor:DQ", "esp:4", "yellow", []],
+
+    ["res1:1", "tempSensor:DQ", "orange", []],
+    ["res1:2", "esp:3V3", "orange", []]
+  ]
+}
