@@ -20,7 +20,7 @@ mysqli_report(MYSQLI_REPORT_OFF);
 $servername = "localhost"; 
 $username = "underwat_seaphonk"; 
 $password = "YPUXnmZjyH8LSamBvcrp"; 
-$dbname = "underwat_seaphonk"; 
+$dbname = "water_drone_db"; 
 
 // Connect to database
 $conn = new mysqli($servername, $username, $password, $dbname);
