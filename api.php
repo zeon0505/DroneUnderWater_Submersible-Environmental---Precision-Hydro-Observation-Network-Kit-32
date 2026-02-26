@@ -1,105 +1,76 @@
 <?php
-header("Content-Type: application/json");
-header("Access-Control-Allow-Origin: *"); // Allow cross-origin requests from dashboard
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-mysqli_report(MYSQLI_REPORT_OFF);
+header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *');
 
-// ═══════════════════════════════════════════
-// 🌊 SeaPhonk - Underwater Drone API
-// ═══════════════════════════════════════════
-// Parameter mapping (ESP32 → Database):
-//   kualitas_air  → pH Level (0–14)
-//   tahan         → Turbidity in NTU (0–1000)
-//   udara         → Suhu / Temperature in °C
-//   daya_listrik  → Battery / Power Level
-// ═══════════════════════════════════════════
+// 1. Koneksi Database
+$servername = "localhost";
+$username = "underwat_seaphonk";
+$password = "YPUXnmZjyH8LSamBvcrp";
+$dbname = "water_drone_db"; // Sesuai dengan database.sql
 
-// Database Configuration
-$servername = "localhost"; 
-$username = "underwat_seaphonk"; 
-$password = "YPUXnmZjyH8LSamBvcrp"; 
-$dbname = "water_drone_db"; 
-
-// Connect to database
 $conn = new mysqli($servername, $username, $password, $dbname);
-    
-// Check connection
+
 if ($conn->connect_error) {
-    die(json_encode(["status" => "error", "message" => "Connection failed: " . $conn->connect_error]));
+    die(json_encode(["status" => "error", "message" => "Connection failed"]));
 }
 
-// Get parameters from URL (GET request from ESP32)
-$kualitas_air = isset($_GET['kualitas_air']) ? floatval($_GET['kualitas_air']) : null;  // pH
-$tahan = isset($_GET['tahan']) ? floatval($_GET['tahan']) : null;                        // Turbidity (NTU)
-$udara = isset($_GET['udara']) ? floatval($_GET['udara']) : null;                        // Suhu (°C)
-$daya_listrik = isset($_GET['daya_listrik']) ? floatval($_GET['daya_listrik']) : null;  // Battery
+// 2. LOGIKA PENERIMAAN DATA (DARI ESP32)
+if (isset($_GET['kualitas_air']) && isset($_GET['tahan'])) {
+    $ph = $_GET['kualitas_air'];
+    $turbidity = $_GET['tahan'];
+    $suhu = $_GET['udara'];
+    $baterai = $_GET['daya_listrik'];
 
-// ── INSERT DATA (from ESP32) ──
-if ($kualitas_air !== null && $tahan !== null && $udara !== null && $daya_listrik !== null) {
-    
-    $stmt = $conn->prepare("INSERT INTO drone_logs (kualitas_air, tahan, udara, daya_listrik) VALUES (?, ?, ?, ?)");
-    $stmt->bind_param("dddd", $kualitas_air, $tahan, $udara, $daya_listrik);
+    $sql = "INSERT INTO drone_logs (kualitas_air, tahan, udara, daya_listrik) 
+            VALUES ('$ph', '$turbidity', '$suhu', '$baterai')";
 
-    if ($stmt->execute()) {
-        echo json_encode([
-            "status" => "success", 
-            "message" => "Data inserted successfully",
-            "data" => [
-                "ph" => $kualitas_air,
-                "turbidity_ntu" => $tahan,
-                "suhu_celsius" => $udara,
-                "battery" => $daya_listrik
-            ]
-        ]);
+    if ($conn->query($sql) === TRUE) {
+        echo json_encode(["status" => "success", "message" => "Data inserted successfully"]);
     } else {
-        echo json_encode(["status" => "error", "message" => "Error: " . $stmt->error]);
+        echo json_encode(["status" => "error", "message" => $conn->error]);
     }
+}
 
-    $stmt->close();
-
-// ── GET LATEST DATA (for Dashboard) ──
-} elseif (isset($_GET['get_latest'])) {
-    $sql = "SELECT * FROM drone_logs ORDER BY id DESC LIMIT 1";
-    $result = $conn->query($sql);
-
+// 3. LOGIKA AMBIL DATA TERBARU (UNTUK DASHBOARD)
+else if (isset($_GET['get_latest'])) {
+    $result = $conn->query("SELECT * FROM drone_logs ORDER BY id DESC LIMIT 1");
     if ($result->num_rows > 0) {
-        $row = $result->fetch_assoc();
-        echo json_encode($row);
+        echo json_encode($result->fetch_assoc());
     } else {
-        echo json_encode(["status" => "empty", "message" => "No data found. Waiting for drone..."]);
+        echo json_encode(["status" => "empty"]);
+    }
+}
+
+// 4. LOGIKA LAPORAN (UNTUK GRAFIK & PDF)
+else if (isset($_GET['get_reports'])) {
+    $period = $_GET['period'] ?? 'daily';
+    
+    // Query untuk Summary
+    $summaryQuery = "SELECT 
+                        AVG(kualitas_air) as avg_kualitas_air, 
+                        MAX(tahan) as max_tahan, 
+                        COUNT(*) as total_logs 
+                     FROM drone_logs";
+    
+    // Jika period daily, filter data 24 jam terakhir
+    if($period == 'daily') {
+        $summaryQuery .= " WHERE timestamp >= NOW() - INTERVAL 1 DAY";
     }
 
-// ── GET HISTORY (for Chart - optional) ──
-} elseif (isset($_GET['get_history'])) {
-    $limit = isset($_GET['limit']) ? intval($_GET['limit']) : 20;
-    $limit = min($limit, 100); // Max 100 rows
-    
-    $sql = "SELECT * FROM drone_logs ORDER BY id DESC LIMIT ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $limit);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    
-    $data = [];
-    while ($row = $result->fetch_assoc()) {
-        $data[] = $row;
+    $summaryRes = $conn->query($summaryQuery);
+    $summary = $summaryRes->fetch_assoc();
+
+    // Ambil 10 data terakhir untuk tabel riwayat
+    $historyRes = $conn->query("SELECT * FROM drone_logs ORDER BY id DESC LIMIT 10");
+    $history = [];
+    while($row = $historyRes->fetch_assoc()) {
+        $history[] = $row;
     }
-    
+
     echo json_encode([
         "status" => "success",
-        "count" => count($data),
-        "data" => array_reverse($data) // Oldest first for chart
-    ]);
-    
-    $stmt->close();
-
-// ── ERROR: Missing parameters ──
-} else {
-    echo json_encode([
-        "status" => "error", 
-        "message" => "Missing parameters. Required: kualitas_air (pH), tahan (NTU), udara (°C), daya_listrik OR get_latest=true OR get_history=true"
+        "summary" => $summary,
+        "history" => $history
     ]);
 }
 

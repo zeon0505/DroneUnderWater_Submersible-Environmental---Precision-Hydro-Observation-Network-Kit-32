@@ -500,52 +500,50 @@
         // Fetch Real Data from API
         let lastDataId = null;
 
-        async function fetchData() {
-            try {
-                const response = await fetch('api.php?get_latest=true');
-                const data = await response.json();
+async function fetchData() {
+    try {
+        const response = await fetch('api.php?get_latest=true');
+        const data = await response.json();
 
-                if (data.status !== "empty" && data.id) {
-                    // Only update and scroll if ID is new
-                    if (data.id !== lastDataId) {
-                        lastDataId = data.id;
+        if (data.status !== "empty" && data.id) {
+            if (data.id !== lastDataId) {
+                lastDataId = data.id;
 
-                        // Update Values
-                        document.getElementById('val-ph').textContent = parseFloat(data.kualitas_air).toFixed(1);
-                        document.getElementById('val-water').textContent = Math.floor(data.tahan);
-                        document.getElementById('val-soil').textContent = parseFloat(data.udara).toFixed(1);
-                        document.getElementById('val-battery').textContent = Math.floor(data.daya_listrik);
+                // Sinkronisasi dengan Database:
+                // kualitas_air -> pH
+                // tahan        -> Water Quality (Turbidity)
+                // udara        -> Temperature (Di UI tertulis Soil)
+                // daya_listrik -> Battery
+                
+                document.getElementById('val-ph').textContent = parseFloat(data.kualitas_air).toFixed(1);
+                document.getElementById('val-water').textContent = Math.floor(data.tahan);
+                document.getElementById('val-soil').textContent = parseFloat(data.udara).toFixed(1); // Ini akan menampilkan suhu
+                document.getElementById('val-battery').textContent = Math.floor(data.daya_listrik);
 
-                        // Update Chart
-                        if (trendChart) {
-                            trendChart.data.datasets[0].data.shift();
-                            trendChart.data.datasets[0].data.push(parseFloat(data.kualitas_air));
-                            trendChart.data.datasets[1].data.shift();
-                            trendChart.data.datasets[1].data.push(parseFloat(data.tahan));
-                            trendChart.data.datasets[2].data.shift();
-                            trendChart.data.datasets[2].data.push(parseFloat(data.udara));
-                            trendChart.data.datasets[3].data.shift();
-                            trendChart.data.datasets[3].data.push(parseFloat(data.daya_listrik));
-                            trendChart.update('none');
-                        }
-
-                        // Update Sync Status
-                        const now = new Date();
-                        document.getElementById('syncStatus').textContent = now.toLocaleTimeString('id-ID', { hour12: false });
-                        document.getElementById('syncStatus').classList.remove('text-amber-500');
-                        document.getElementById('syncStatus').classList.add('text-emerald-500');
-
-                        // Also refresh history context
-                        fetchHistory();
-                    }
+                // Update Grafik (Trend Chart)
+                if (trendChart) {
+                    trendChart.data.datasets[0].data.shift();
+                    trendChart.data.datasets[0].data.push(parseFloat(data.kualitas_air));
+                    trendChart.data.datasets[1].data.shift();
+                    trendChart.data.datasets[1].data.push(parseFloat(data.tahan));
+                    trendChart.data.datasets[2].data.shift();
+                    trendChart.data.datasets[2].data.push(parseFloat(data.udara));
+                    trendChart.data.datasets[3].data.shift();
+                    trendChart.data.datasets[3].data.push(parseFloat(data.daya_listrik));
+                    trendChart.update('none');
                 }
-            } catch (error) {
-                console.error('Error fetching data:', error);
-                document.getElementById('syncStatus').textContent = "OFFLINE";
-                document.getElementById('syncStatus').classList.remove('text-emerald-500');
-                document.getElementById('syncStatus').classList.add('text-amber-500');
+
+                const now = new Date();
+                document.getElementById('syncStatus').textContent = now.toLocaleTimeString('id-ID', { hour12: false });
+                document.getElementById('syncStatus').className = "text-sm font-mono font-medium text-emerald-500 uppercase";
             }
         }
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        document.getElementById('syncStatus').textContent = "OFFLINE";
+        document.getElementById('syncStatus').className = "text-sm font-mono font-medium text-amber-500 uppercase";
+    }
+}
 
         // Report Chart Management
         let reportChart;
@@ -583,27 +581,27 @@
             });
         }
 
-        async function fetchReports(period = 'daily') {
-            try {
-                const response = await fetch(`api.php?get_reports=true&period=${period}`);
-                const result = await response.json();
+      async function fetchReports(period = 'daily') {
+    try {
+        const response = await fetch(`api.php?get_reports=true&period=${period}`);
+        const result = await response.json();
 
-                if (result.status === "success") {
-                    const s = result.summary;
-                    const ph = s.avg_ph ? parseFloat(s.avg_ph) : 0;
-                    const turb = s.max_turbidity ? parseFloat(s.max_turbidity) : 0;
+        if (result.status === "success") {
+            const s = result.summary;
+            // Gunakan nama kolom: avg_kualitas_air dan max_tahan
+            const ph = s.avg_kualitas_air ? parseFloat(s.avg_kualitas_air) : 0;
+            const turb = s.max_tahan ? parseFloat(s.max_tahan) : 0;
 
-                    document.getElementById('rep-avg-ph').textContent = ph.toFixed(2);
-                    document.getElementById('rep-max-turb').textContent = Math.floor(turb) + " NTU";
-                    document.getElementById('rep-total-logs').textContent = s.total_logs || "0";
+            document.getElementById('rep-avg-ph').textContent = ph.toFixed(2);
+            document.getElementById('rep-max-turb').textContent = Math.floor(turb) + " NTU";
+            document.getElementById('rep-total-logs').textContent = s.total_logs || "0";
 
-                    initReportChart(ph, turb);
-                }
-            } catch (error) {
-                console.error('Error fetching reports:', error);
-            }
+            initReportChart(ph, turb);
         }
-
+    } catch (error) {
+        console.error('Error fetching reports:', error);
+    }
+}
         initChart();
         setInterval(fetchData, 3000);
         setInterval(() => fetchReports(document.querySelector('select')?.value || 'daily'), 30000);
