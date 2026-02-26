@@ -151,8 +151,10 @@
                 <div
                     class="p-6 rounded-2xl bg-white dark:bg-brand-card border border-zinc-200 dark:border-brand-border group hover:border-cyan-500/50 transition-all duration-300 relative overflow-hidden">
                     <div class="flex justify-between items-start mb-4">
-                        <h3 class="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">PH
-                            Level</h3>
+                        <h3
+                            class="flex items-center gap-2 text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">
+                            <i data-lucide="flask-conical" class="w-3 h-3"></i> PH Level
+                        </h3>
                         <span
                             class="px-2 py-1 bg-emerald-500/10 text-emerald-500 text-[8px] font-black rounded-full border border-emerald-500/20 uppercase">Optimal</span>
                     </div>
@@ -168,31 +170,35 @@
                 <div
                     class="p-6 rounded-2xl bg-white dark:bg-brand-card border border-zinc-200 dark:border-brand-border group hover:border-blue-500/50 transition-all duration-300 relative overflow-hidden">
                     <div class="flex justify-between items-start mb-4">
-                        <h3 class="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">
-                            Water Quality</h3>
+                        <h3
+                            class="flex items-center gap-2 text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">
+                            <i data-lucide="droplets" class="w-3 h-3"></i> Water Turbidity
+                        </h3>
                         <span
                             class="px-2 py-1 bg-blue-500/10 text-blue-500 text-[8px] font-black rounded-full border border-blue-500/20 uppercase">Good</span>
                     </div>
                     <div class="flex items-baseline gap-1">
                         <span class="text-4xl font-bold transition-all group-hover:scale-105" id="val-water">0</span>
-                        <span class="text-zinc-500 text-sm">ppm</span>
+                        <span class="text-zinc-500 text-sm">NTU</span>
                     </div>
                     <div class="absolute bottom-0 left-0 h-1 w-full bg-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.5)]">
                     </div>
                 </div>
 
-                <!-- Soil Moisture Card -->
+                <!-- Temperature Card -->
                 <div
                     class="p-6 rounded-2xl bg-white dark:bg-brand-card border border-zinc-200 dark:border-brand-border group hover:border-orange-500/50 transition-all duration-300 relative overflow-hidden">
                     <div class="flex justify-between items-start mb-4">
-                        <h3 class="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">
-                            Soil Moisture</h3>
+                        <h3
+                            class="flex items-center gap-2 text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">
+                            <i data-lucide="thermometer" class="w-3 h-3"></i> Water Temperature
+                        </h3>
                         <span
                             class="px-2 py-1 bg-orange-500/10 text-orange-500 text-[8px] font-black rounded-full border border-orange-500/20 uppercase">Normal</span>
                     </div>
                     <div class="flex items-baseline gap-1">
-                        <span class="text-4xl font-bold transition-all group-hover:scale-105" id="val-soil">0.0</span>
-                        <span class="text-zinc-500 text-sm">%</span>
+                        <span class="text-4xl font-bold transition-all group-hover:scale-105" id="val-temp">0.0</span>
+                        <span class="text-zinc-500 text-sm">°C</span>
                     </div>
                     <div
                         class="absolute bottom-0 left-0 h-1 w-full bg-orange-500 shadow-[0_0_15px_rgba(249,115,22,0.5)]">
@@ -203,8 +209,10 @@
                 <div
                     class="p-6 rounded-2xl bg-white dark:bg-brand-card border border-zinc-200 dark:border-brand-border group hover:border-purple-500/50 transition-all duration-300 relative overflow-hidden">
                     <div class="flex justify-between items-start mb-4">
-                        <h3 class="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">
-                            Battery Status</h3>
+                        <h3
+                            class="flex items-center gap-2 text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">
+                            <i data-lucide="battery-charging" class="w-3 h-3"></i> Battery Status
+                        </h3>
                         <span
                             class="px-2 py-1 bg-purple-500/10 text-purple-500 text-[8px] font-black rounded-full border border-purple-500/20 uppercase">Charging</span>
                     </div>
@@ -237,7 +245,7 @@
                         </div>
                         <div class="flex items-center gap-2">
                             <div class="w-3 h-3 rounded-full bg-orange-500"></div>
-                            <span class="dark:text-zinc-400">Soil (%)</span>
+                            <span class="dark:text-zinc-400">Temp (°C)</span>
                         </div>
                         <div class="flex items-center gap-2">
                             <div class="w-3 h-3 rounded-full bg-purple-500"></div>
@@ -309,8 +317,8 @@
                             <tr>
                                 <th class="px-6 py-4 text-[10px] font-black uppercase text-zinc-500">Timestamp</th>
                                 <th class="px-6 py-4 text-[10px] font-black uppercase text-zinc-500">PH</th>
-                                <th class="px-6 py-4 text-[10px] font-black uppercase text-zinc-500">Water</th>
-                                <th class="px-6 py-4 text-[10px] font-black uppercase text-zinc-500">Soil</th>
+                                <th class="px-6 py-4 text-[10px] font-black uppercase text-zinc-500">NTU</th>
+                                <th class="px-6 py-4 text-[10px] font-black uppercase text-zinc-500">Temp</th>
                                 <th class="px-6 py-4 text-[10px] font-black uppercase text-zinc-500">Battery</th>
                             </tr>
                         </thead>
@@ -321,8 +329,8 @@
                                         <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-800/30 transition-colors">
                                             <td class="px-6 py-4 text-xs font-mono text-zinc-400">2026-02-16 21:${10 + i}:45</td>
                                             <td class="px-6 py-4 text-xs font-bold">7.${1 + i % 3}</td>
-                                            <td class="px-6 py-4 text-xs font-bold">${500 + i * 5} ppm</td>
-                                            <td class="px-6 py-4 text-xs font-bold">${42 + (i % 2)}.0 %</td>
+                                            <td class="px-6 py-4 text-xs font-bold">${500 + i * 5} NTU</td>
+                                            <td class="px-6 py-4 text-xs font-bold">${25 + (i % 3)}.0 °C</td>
                                             <td class="px-6 py-4 text-xs font-bold">${80 - i}%</td>
                                         </tr>
                                     `);
@@ -337,7 +345,7 @@
 
     <footer class="max-w-[1400px] mx-auto px-6 py-12 text-center">
         <p class="text-[10px] text-zinc-500 font-bold uppercase tracking-[0.2em]">Automatic Synchronization Active -
-            PHONK 32 OS 1.0</p>
+            PHON 32 OS 1.0</p>
     </footer>
 
     <script>
@@ -500,50 +508,50 @@
         // Fetch Real Data from API
         let lastDataId = null;
 
-async function fetchData() {
-    try {
-        const response = await fetch('api.php?get_latest=true');
-        const data = await response.json();
+        async function fetchData() {
+            try {
+                const response = await fetch('api.php?get_latest=true');
+                const data = await response.json();
 
-        if (data.status !== "empty" && data.id) {
-            if (data.id !== lastDataId) {
-                lastDataId = data.id;
+                if (data.status !== "empty" && data.id) {
+                    if (data.id !== lastDataId) {
+                        lastDataId = data.id;
 
-                // Sinkronisasi dengan Database:
-                // kualitas_air -> pH
-                // tahan        -> Water Quality (Turbidity)
-                // udara        -> Temperature (Di UI tertulis Soil)
-                // daya_listrik -> Battery
-                
-                document.getElementById('val-ph').textContent = parseFloat(data.kualitas_air).toFixed(1);
-                document.getElementById('val-water').textContent = Math.floor(data.tahan);
-                document.getElementById('val-soil').textContent = parseFloat(data.udara).toFixed(1); // Ini akan menampilkan suhu
-                document.getElementById('val-battery').textContent = Math.floor(data.daya_listrik);
+                        // Sinkronisasi dengan Database:
+                        // kualitas_air -> pH
+                        // tahan        -> Water Quality (Turbidity)
+                        // udara        -> Temperature (Di UI tertulis Soil)
+                        // daya_listrik -> Battery
 
-                // Update Grafik (Trend Chart)
-                if (trendChart) {
-                    trendChart.data.datasets[0].data.shift();
-                    trendChart.data.datasets[0].data.push(parseFloat(data.kualitas_air));
-                    trendChart.data.datasets[1].data.shift();
-                    trendChart.data.datasets[1].data.push(parseFloat(data.tahan));
-                    trendChart.data.datasets[2].data.shift();
-                    trendChart.data.datasets[2].data.push(parseFloat(data.udara));
-                    trendChart.data.datasets[3].data.shift();
-                    trendChart.data.datasets[3].data.push(parseFloat(data.daya_listrik));
-                    trendChart.update('none');
+                        document.getElementById('val-ph').textContent = parseFloat(data.kualitas_air).toFixed(1);
+                        document.getElementById('val-water').textContent = Math.floor(data.tahan);
+                        document.getElementById('val-temp').textContent = parseFloat(data.udara).toFixed(1); // Ini akan menampilkan suhu
+                        document.getElementById('val-battery').textContent = Math.floor(data.daya_listrik);
+
+                        // Update Grafik (Trend Chart)
+                        if (trendChart) {
+                            trendChart.data.datasets[0].data.shift();
+                            trendChart.data.datasets[0].data.push(parseFloat(data.kualitas_air));
+                            trendChart.data.datasets[1].data.shift();
+                            trendChart.data.datasets[1].data.push(parseFloat(data.tahan));
+                            trendChart.data.datasets[2].data.shift();
+                            trendChart.data.datasets[2].data.push(parseFloat(data.udara));
+                            trendChart.data.datasets[3].data.shift();
+                            trendChart.data.datasets[3].data.push(parseFloat(data.daya_listrik));
+                            trendChart.update('none');
+                        }
+
+                        const now = new Date();
+                        document.getElementById('syncStatus').textContent = now.toLocaleTimeString('id-ID', { hour12: false });
+                        document.getElementById('syncStatus').className = "text-sm font-mono font-medium text-emerald-500 uppercase";
+                    }
                 }
-
-                const now = new Date();
-                document.getElementById('syncStatus').textContent = now.toLocaleTimeString('id-ID', { hour12: false });
-                document.getElementById('syncStatus').className = "text-sm font-mono font-medium text-emerald-500 uppercase";
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                document.getElementById('syncStatus').textContent = "OFFLINE";
+                document.getElementById('syncStatus').className = "text-sm font-mono font-medium text-amber-500 uppercase";
             }
         }
-    } catch (error) {
-        console.error('Error fetching data:', error);
-        document.getElementById('syncStatus').textContent = "OFFLINE";
-        document.getElementById('syncStatus').className = "text-sm font-mono font-medium text-amber-500 uppercase";
-    }
-}
 
         // Report Chart Management
         let reportChart;
@@ -581,27 +589,27 @@ async function fetchData() {
             });
         }
 
-      async function fetchReports(period = 'daily') {
-    try {
-        const response = await fetch(`api.php?get_reports=true&period=${period}`);
-        const result = await response.json();
+        async function fetchReports(period = 'daily') {
+            try {
+                const response = await fetch(`api.php?get_reports=true&period=${period}`);
+                const result = await response.json();
 
-        if (result.status === "success") {
-            const s = result.summary;
-            // Gunakan nama kolom: avg_kualitas_air dan max_tahan
-            const ph = s.avg_kualitas_air ? parseFloat(s.avg_kualitas_air) : 0;
-            const turb = s.max_tahan ? parseFloat(s.max_tahan) : 0;
+                if (result.status === "success") {
+                    const s = result.summary;
+                    // Gunakan nama kolom: avg_kualitas_air dan max_tahan
+                    const ph = s.avg_kualitas_air ? parseFloat(s.avg_kualitas_air) : 0;
+                    const turb = s.max_tahan ? parseFloat(s.max_tahan) : 0;
 
-            document.getElementById('rep-avg-ph').textContent = ph.toFixed(2);
-            document.getElementById('rep-max-turb').textContent = Math.floor(turb) + " NTU";
-            document.getElementById('rep-total-logs').textContent = s.total_logs || "0";
+                    document.getElementById('rep-avg-ph').textContent = ph.toFixed(2);
+                    document.getElementById('rep-max-turb').textContent = Math.floor(turb) + " NTU";
+                    document.getElementById('rep-total-logs').textContent = s.total_logs || "0";
 
-            initReportChart(ph, turb);
+                    initReportChart(ph, turb);
+                }
+            } catch (error) {
+                console.error('Error fetching reports:', error);
+            }
         }
-    } catch (error) {
-        console.error('Error fetching reports:', error);
-    }
-}
         initChart();
         setInterval(fetchData, 3000);
         setInterval(() => fetchReports(document.querySelector('select')?.value || 'daily'), 30000);
@@ -621,7 +629,7 @@ async function fetchData() {
             const element = document.getElementById('section-reports');
             const opt = {
                 margin: 10,
-                filename: 'SE-PHONK32-Report.pdf',
+                filename: 'SE-PHON32-Report.pdf',
                 image: { type: 'jpeg', quality: 0.98 },
                 html2canvas: { scale: 2, useCORS: true, backgroundColor: document.documentElement.classList.contains('dark') ? '#09090b' : '#ffffff' },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }

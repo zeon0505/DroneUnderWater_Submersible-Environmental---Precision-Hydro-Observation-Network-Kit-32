@@ -183,7 +183,7 @@ void setup() {
   lcd.init();
   lcd.backlight();
   lcd.setCursor(0, 0);
-  lcd.print("SE-PHONK 32");
+  lcd.print("SE-PHON 32");
   lcd.setCursor(0, 1);
   lcd.print("System Ready...");
   delay(2000);
