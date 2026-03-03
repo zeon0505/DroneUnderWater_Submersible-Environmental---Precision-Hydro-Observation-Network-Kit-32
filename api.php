@@ -8,9 +8,9 @@ mysqli_report(MYSQLI_REPORT_OFF);
 
 // === KONFIGURASI DATABASE ===
 $servername = "localhost";
-$username   = "underwat_daffa_water";
-$password   = "DDKg4Br3WwYBeTkyg7Dm";
-$dbname     = "underwat_daffa_water";
+$username   = "underwat_yoga";
+$password   = "hAe6NfAAwbkCXT42RJDZ";
+$dbname     = "underwat_yoga";
 
 // === KONEKSI DATABASE ===
 $conn = new mysqli($servername, $username, $password, $dbname);

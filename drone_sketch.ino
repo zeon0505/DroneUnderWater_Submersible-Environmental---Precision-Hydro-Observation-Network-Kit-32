@@ -15,7 +15,7 @@
 // PENTING: Perhatikan spasi jika masih gagal konek!
 const char* ssid     = "daffa";       
 const char* password = "daffa123";               // Password kosong sesuai info terakhir
-String serverName    = "http://daffa.underwaterdrone.my.id/api.php";
+String serverName    = "http://yoga.underwaterdrone.my.id/api.php";
 
 // =============================================
 // 3. INISIALISASI OBJEK & VARIABEL
